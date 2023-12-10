@@ -1,0 +1,66 @@
+//Create User
+POST http://localhost:5000/api/v1/register
+Content-Type: application/json
+
+{
+    "name": "Asnafi ",
+    "email": "user@gmail.com",
+    "noTelp": "081234537632",
+    "password": "123456",
+    "confPassword": "123456",
+    "role": "user"
+}
+
+###
+//Login User
+POST http://localhost:5000/api/v1/login
+Content-Type: application/json
+
+{
+    "email": "user@gmail.com",
+    "password": "123456"
+}
+
+
+###
+//Login Admin
+POST http://localhost:5000/api/v1/login
+Content-Type: application/json
+
+{
+    "email": "admin@gmail.com",
+    "password": "123456"
+}
+
+###
+// Log Out
+DELETE http://localhost:5000/api/v1/logout
+
+###
+//Get ME
+GET http://localhost:5000/api/v1/me
+
+
+###
+//Get Report
+GET http://localhost:5000/api/v1/reports
+
+###
+//Update Report
+PATCH http://localhost:5000/api/v1/reports
+Content-Type: application/json
+
+{
+    "reportId" : "7",
+    "status": "Diterima"
+}
+
+
+###
+// Get All User
+GET http://localhost:5000/api/v1/users
+
+###
+// Delete User By Id
+DELETE  http://localhost:5000/api/v1/user/5c6af6e4-b758-4a95-8c91-7c723fa10520
+
