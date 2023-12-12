@@ -1,10 +1,11 @@
 const mysql = require("mysql2/promise");
+require("dotenv").config();
 
 const db = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  database: "pengaduan_db",
-  password: "", //!sdw%2sdscas.`
+  host: process.env.DB_HOST,
+  user: process.env.DB_USERNAME,
+  database: process.env.DB_DBNAME,
+  password: process.env.DB_PASSWORD, //!sdw%2sdscas.`
   connectionLimit: 10,
   enableKeepAlive: true,
   keepAliveInitialDelay: 0,
