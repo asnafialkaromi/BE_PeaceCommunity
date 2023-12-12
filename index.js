@@ -14,20 +14,22 @@ const PORT = process.env.PORT;
 const server = createServer(app);
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "*",
     methods: ["GET", "POST", "DELETE", "PATCH"],
     credentials: true,
   })
 );
 app.use(
   session({
-    secret: "secret",
-    resave: true,
+    secret: process.env.SESSION_SECRET,
+    resave: false,
     saveUninitialized: true,
+    proxy: true,
+    name: "SessionId",
     cookie: {
-      sameSite: "Strict",
-      secure: false,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
+      secure: true,
+      httpOnly: false,
+      sameSite: "none",
     },
   })
 );
