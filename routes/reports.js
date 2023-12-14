@@ -8,7 +8,7 @@ const {
 const { verifyUser, adminOnly } = require("../middleware/authUser");
 
 routes.get("/reports", verifyUser, getReports);
-routes.post("/reports", verifyUser, createReport);
+routes.post("/reports", createReport);
 routes.patch("/reports", verifyUser, adminOnly, updateReport);
 
 module.exports = routes;
