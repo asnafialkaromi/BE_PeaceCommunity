@@ -77,7 +77,6 @@ async function login(req, res) {
     if (!checkPassword) return res.status(400).json("Password not match");
 
     req.session.uuid = checkLogin[0].uuid;
-    req.session.authorized = true;
 
     const { uuid, name, role } = checkLogin[0];
 
@@ -91,7 +90,7 @@ async function login(req, res) {
 }
 
 async function getMe(req, res) {
-  if (!req.session.authorized) return res.status(401).json("Anda Belum Login");
+  if (!req.session.uuid) return res.status(401).json("Anda Belum Login");
   try {
     const getMe = await query(
       `
@@ -109,10 +108,8 @@ async function getMe(req, res) {
 }
 
 async function logout(req, res) {
-  req.session.destroy((err) => {
-    if (err) return res.status(400).json({ msg: "Tidak dapat logout" });
-    res.status(200).json({ msg: "Anda telah logout" });
-  });
+  req.session = null;
+  res.json({ message: "Logout Berhasil" });
 }
 
 module.exports = {

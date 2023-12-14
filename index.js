@@ -6,31 +6,27 @@ const session = require("express-session");
 const { createServer } = require("http");
 const routes = require("./routes");
 const fileUpload = require("express-fileupload");
+const cookiesSession = require("cookie-session");
 
 require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT;
 const server = createServer(app);
+
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "DELETE", "PATCH"],
     credentials: true,
   })
 );
+
 app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    proxy: true,
-    name: "SessionId",
-    cookie: {
-      secure: true,
-      httpOnly: false,
-      sameSite: "none",
-    },
+  cookiesSession({
+    name: "session",
+    keys: ["key1", "key2"],
+    maxAge: 24 * 60 * 60 * 1000,
   })
 );
 
