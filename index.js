@@ -14,6 +14,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const server = createServer(app);
 
+// Set CORS headers
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -37,4 +38,6 @@ app.use(express.static("public"));
 app.use(fileUpload());
 app.use(routes);
 
-server.listen(PORT, () => console.log(`Server already running`));
+server.listen(PORT, () =>
+  console.log(`Server already running on port ${PORT}`)
+);
