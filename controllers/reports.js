@@ -23,7 +23,6 @@ async function createReport(req, res) {
 
   const { name, email, noTelp, alamat, pengaduan, status } = req.body;
   const file = req.files.file;
-  const fileSize = file.data.length;
   const ext = path.extname(file.name);
   const fileName = file.md5 + ext;
   const url = `${req.protocol}://${req.get("host")}/uploads/${fileName}`;
@@ -31,8 +30,6 @@ async function createReport(req, res) {
 
   if (!allowedType.includes(ext.toLowerCase()))
     return res.status(422).json({ msg: "Invalid Images" });
-  if (fileSize > 5000000)
-    return res.status(422).json({ msg: "Image must be less than 5 MB" });
 
   try {
     await fs.writeFile(`./public/uploads/${fileName}`, file.data);
