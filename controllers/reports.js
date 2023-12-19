@@ -19,10 +19,11 @@ async function getReports(req, res) {
 
 async function createReport(req, res) {
   const { name, email, noTelp, alamat, pengaduan, status } = req.body;
-
+  
   if (!name || !email || !noTelp || isNaN(+noTelp) || !alamat || !pengaduan) {
     return res.status(400).json({ msg: "Masukkan semua data yang diperlukan" });
   }
+
 
   if (req.files && req.files.file) {
     const file = req.files.file;
