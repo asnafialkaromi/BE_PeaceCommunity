@@ -7,7 +7,7 @@ const { createServer } = require("http");
 const routes = require("./routes");
 const fileUpload = require("express-fileupload");
 const cookiesSession = require("cookie-session");
-const query = require("./database/query");
+const query = require("./database/index.js");
 
 require("dotenv").config();
 
@@ -18,10 +18,7 @@ const server = createServer(app);
 // Set CORS headers
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://8r2cfk0b-5173.asse.devtunnels.ms",
-    ],
+    origin: ["http://localhost:5173"],
     methods: ["GET", "POST", "DELETE", "PATCH"],
     credentials: true,
   })
