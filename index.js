@@ -17,7 +17,10 @@ const server = createServer(app);
 // Set CORS headers
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "https://8r2cfk0b-5173.asse.devtunnels.ms",
+    ],
     methods: ["GET", "POST", "DELETE", "PATCH"],
     credentials: true,
   })

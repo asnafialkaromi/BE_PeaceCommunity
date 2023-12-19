@@ -6,34 +6,30 @@ async function register(req, res) {
   const { name, email, noTelp, password, confPassword, role } = req.body;
 
   if (
-    name === undefined ||
-    name === "" ||
-    email === undefined ||
-    email === "" ||
-    noTelp === undefined ||
+    !name ||
+    !email ||
+    !noTelp ||
     isNaN(+noTelp) ||
-    password === undefined ||
-    password === "" ||
-    confPassword === undefined ||
-    confPassword === ""
-  )
-    return res.status(400).json("Invalid data!");
+    !password ||
+    !confPassword
+  ) {
+    return res.status(400).json("Masukkan semua data yang diperlukan!");
+  }
 
-  if (password !== confPassword)
-    return res.status(400).json("Password not match!");
+  if (password !== confPassword) {
+    return res.status(400).json("Password dan konfirmasi password tidak sama!");
+  }
+
+  const isDuplicate = await query(
+    `SELECT id FROM users WHERE noTelp = ? OR email = ?`,
+    [noTelp, email]
+  );
+
+  if (isDuplicate.length > 0) {
+    return res.status(400).json("Pengguna sudah ada!");
+  }
 
   try {
-    // logic handling
-    const isDuplicate = await query(
-      `
-        SELECT id FROM users WHERE noTelp = ? OR email = ? 
-    `,
-      [noTelp, email]
-    );
-
-    if (isDuplicate.length > 0)
-      return res.status(400).json("User already exists!");
-
     const salt = await bcryptjs.genSalt(12);
     const hash = await bcryptjs.hash(password, salt);
 
@@ -42,50 +38,43 @@ async function register(req, res) {
       [randomUUID(), name, email, noTelp, hash, role]
     );
 
-    return res.status(200).json("Register success!");
+    return res.status(200).json("Pendaftaran Berhasil!");
   } catch (error) {
-    res.status(400).json("Something went wrong!");
-    res.status(400).json(error);
+    console.error(error);
+    return res.status(500).json("Terdapat kesalahan pada server!");
   }
 }
 
 async function login(req, res) {
   const { email, password } = req.body;
-  if (
-    email === undefined ||
-    email === "" ||
-    password === undefined ||
-    password === ""
-  )
+
+  if (!email || !password) {
     return res.status(400).json("Masukkan Semua Data");
+  }
+
   try {
-    // logic handling
-    const checkLogin = await query(
-      `
-        SELECT * FROM users WHERE email = ?;
-    `,
-      [email]
-    );
+    const [checkLogin] = await query("SELECT * FROM users WHERE email = ?;", [
+      email,
+    ]);
 
-    if (!checkLogin) return res.status(400).json("User not found");
+    if (!checkLogin) {
+      return res.status(400).json({ error: "Pengguna tidak ditemukan" });
+    }
 
-    const checkPassword = await bcryptjs.compare(
-      password,
-      checkLogin[0].password
-    );
+    const checkPassword = await bcryptjs.compare(password, checkLogin.password);
 
-    if (!checkPassword) return res.status(400).json("Password not match");
+    if (!checkPassword) {
+      return res.status(400).json({ error: "Password anda salah" });
+    }
 
-    req.session.uuid = checkLogin[0].uuid;
+    req.session.uuid = checkLogin.uuid;
 
-    const { uuid, name, role } = checkLogin[0];
+    const { uuid, name, role } = checkLogin;
 
-    return res
-      .status(200)
-      .json({ uuid, name, role, sessionStorage: req.session.uuid });
+    return res.status(200).json({ uuid, name, role });
   } catch (error) {
-    console.log(error);
-    return res.status(400).json("Something went wrong!");
+    console.error(error);
+    return res.status(500).json("Terdapat kesalahan pada server");
   }
 }
 
@@ -103,7 +92,7 @@ async function getMe(req, res) {
 
     return res.status(200).json({ uuid, name, email, role });
   } catch (error) {
-    return res.status(400).json("Something went wrong!");
+    return res.status(400).json("Terdapat kesalahan pada server");
   }
 }
 
