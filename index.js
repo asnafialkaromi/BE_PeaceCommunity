@@ -7,6 +7,7 @@ const { createServer } = require("http");
 const routes = require("./routes");
 const fileUpload = require("express-fileupload");
 const cookiesSession = require("cookie-session");
+const query = require("./database/query");
 
 require("dotenv").config();
 
@@ -40,6 +41,16 @@ app.use(bodyParser.json());
 app.use(express.static("public"));
 app.use(fileUpload());
 app.use(routes);
+
+(async () => {
+  try {
+    await query("SELECT 1+1 as result");
+    console.log("Database connection successful!");
+  } catch (error) {
+    console.error("Error connecting to database:", error);
+    process.exit(1);
+  }
+})();
 
 server.listen(PORT, () =>
   console.log(`Server already running on port ${PORT}`)
